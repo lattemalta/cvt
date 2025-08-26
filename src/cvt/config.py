@@ -1,6 +1,6 @@
 class ModelConfig:
     def __init__(self) -> None:
-        self.num_epochs = 3
+        self.num_epochs = 50
         self.batch_size = 32
         self.lr = 0.01
         self.img_size = 32

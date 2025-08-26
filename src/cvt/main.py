@@ -6,6 +6,7 @@ import torch.nn as nn
 import torchvision
 import torchvision.transforms as transforms
 from rich import print
+from rich.progress import track
 from rich.traceback import install
 from torch.utils.data import DataLoader
 
@@ -94,12 +95,13 @@ def main() -> None:
     val_accuracies = []
 
     for epoch in range(config.num_epochs):
+        print(f"Epoch {epoch + 1}/{config.num_epochs} started")
         model.train()
 
         total_loss = 0.0
         total_accuracy = 0.0
 
-        for x, y in train_loader:
+        for x, y in track(train_loader, description="Training"):
             x = x.to(device)
             y = y.to(device)
 
@@ -120,7 +122,6 @@ def main() -> None:
 
         val_loss, val_accuracy = evaluate(test_loader, model, loss_func, device)
 
-        print(f"Epoch {epoch + 1}/{config.num_epochs}")
         print(f"  Training: loss = {avg_train_loss:.3f}, accuracy = {avg_train_accuracy:.3f}")
         print(f"  Validation: loss = {val_loss:.3f}, accuracy = {val_accuracy:.3f}")
 
