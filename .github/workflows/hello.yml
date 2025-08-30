@@ -1,4 +1,5 @@
 name: Hello
+on: push
 
 jobs:
   uv-example:
