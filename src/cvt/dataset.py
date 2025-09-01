@@ -1,3 +1,5 @@
+from logging import getLogger
+
 import cv2
 import numpy as np
 import torch
@@ -5,7 +7,6 @@ import torch.utils.data as data
 import torchvision.transforms as transforms
 from PIL import Image
 
-from logging import getLogger
 from .logger import setup_logger
 
 logger = getLogger(__name__)

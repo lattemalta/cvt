@@ -1,6 +1,7 @@
-from rich.logging import RichHandler
-from logging import getLogger
 import logging
+from logging import getLogger
+
+from rich.logging import RichHandler
 
 
 def setup_logger() -> None:
