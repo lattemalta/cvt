@@ -11,7 +11,7 @@ from rich.traceback import install
 from torch.utils.data import DataLoader
 
 from .config import ModelConfig
-from .model import VisionTransformer
+from .models.vit import VisionTransformer
 
 install(show_locals=True)
 ROOT = Path(__file__).parents[2].resolve()

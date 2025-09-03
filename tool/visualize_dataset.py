@@ -53,7 +53,7 @@ def visualize_synthetic_data(num_samples: int = 4):
     plt.savefig("./synthetic_dataset_samples.png", dpi=150, bbox_inches="tight")
     plt.show()
 
-    logger.info(f"Saved visualization to ./synthetic_dataset_samples.png")
+    logger.info("Saved visualization to ./synthetic_dataset_samples.png")
     logger.info(f"Image tensor shape: {images.shape}")
     logger.info(f"Mask tensor shape: {gt_masks.shape}")
     logger.info(f"Image value range: [{img_denorm.min():.3f}, {img_denorm.max():.3f}]")
