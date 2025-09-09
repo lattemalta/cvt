@@ -7,7 +7,7 @@ import torch.nn as nn
 import torch.optim as optim
 from rich.progress import track
 
-from .config import TrainingConfig
+from ..src.cvt.config import TrainingConfig
 from .dataset import create_dataloaders
 from .dbnet import DBNet
 from .dbnet_loss import create_dbnet_loss
