@@ -10,3 +10,6 @@ wheels/
 .venv
 data/
 .vscode/
+lightning_logs/
+outputs/
+results/
