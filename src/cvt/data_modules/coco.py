@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import lightning as L
 import torch
@@ -12,16 +12,14 @@ from torch.utils.data import DataLoader, Dataset
 class COCODataset(Dataset):
     def __init__(
         self,
-        root_dir: str,
-        annotation_file: str,
+        root_dir: Path | str,
+        annotation_file: Path | str,
         transform: transforms.Compose | None = None,
-        target_transform: transforms.Compose | None = None,
     ) -> None:
         self.root_dir = Path(root_dir)
         self.coco = COCO(annotation_file)
         self.image_ids = list(self.coco.imgs.keys())
         self.transform = transform
-        self.target_transform = target_transform
 
         # Get category information
         self.categories = self.coco.loadCats(self.coco.getCatIds())
@@ -81,10 +79,7 @@ class COCODataset(Dataset):
         if self.transform is not None:
             image = self.transform(image)
 
-        if self.target_transform is not None:
-            target = self.target_transform(target)
-
-        return image, target
+        return cast(torch.Tensor, image), target
 
     def get_category_names(self) -> list[str]:
         """Get list of category names."""
@@ -106,7 +101,7 @@ def collate_fn(batch: list[tuple[torch.Tensor, dict[str, Any]]]) -> tuple[list[t
 class LitCOCO2017(L.LightningDataModule):
     def __init__(
         self,
-        root_dir: str = "data/coco2017",
+        root_dir: Path | str,
         batch_size: int = 4,
         num_workers: int = 4,
         image_size: int = 512,
@@ -167,98 +162,3 @@ class LitCOCO2017(L.LightningDataModule):
             collate_fn=collate_fn,
             persistent_workers=True if self.num_workers > 0 else False,
         )
-
-    def get_num_classes(self) -> int:
-        """Get number of classes in COCO dataset (80 classes)."""
-        return 80
-
-    def get_category_names(self) -> list[str]:
-        """Get list of category names."""
-        if hasattr(self, "val_dataset"):
-            return self.val_dataset.get_category_names()
-        elif hasattr(self, "train_dataset"):
-            return self.train_dataset.get_category_names()
-        else:
-            # COCO 80 class names
-            return [
-                "person",
-                "bicycle",
-                "car",
-                "motorcycle",
-                "airplane",
-                "bus",
-                "train",
-                "truck",
-                "boat",
-                "traffic light",
-                "fire hydrant",
-                "stop sign",
-                "parking meter",
-                "bench",
-                "bird",
-                "cat",
-                "dog",
-                "horse",
-                "sheep",
-                "cow",
-                "elephant",
-                "bear",
-                "zebra",
-                "giraffe",
-                "backpack",
-                "umbrella",
-                "handbag",
-                "tie",
-                "suitcase",
-                "frisbee",
-                "skis",
-                "snowboard",
-                "sports ball",
-                "kite",
-                "baseball bat",
-                "baseball glove",
-                "skateboard",
-                "surfboard",
-                "tennis racket",
-                "bottle",
-                "wine glass",
-                "cup",
-                "fork",
-                "knife",
-                "spoon",
-                "bowl",
-                "banana",
-                "apple",
-                "sandwich",
-                "orange",
-                "broccoli",
-                "carrot",
-                "hot dog",
-                "pizza",
-                "donut",
-                "cake",
-                "chair",
-                "couch",
-                "potted plant",
-                "bed",
-                "dining table",
-                "toilet",
-                "tv",
-                "laptop",
-                "mouse",
-                "remote",
-                "keyboard",
-                "cell phone",
-                "microwave",
-                "oven",
-                "toaster",
-                "sink",
-                "refrigerator",
-                "book",
-                "clock",
-                "vase",
-                "scissors",
-                "teddy bear",
-                "hair drier",
-                "toothbrush",
-            ]
