@@ -9,14 +9,13 @@ dependencies = [
     "matplotlib>=3.10.5",
     "opencv-python>=4.8.0",
     "pillow>=10.0.0",
-    "platformdirs>=4.0.0",
-    "pooch>=1.8.2",
     "pycocotools>=2.0.10",
     "rich>=14.1.0",
     "scipy>=1.12.0",
     "torch>=2.8.0",
     "torchsummary>=1.5.1",
     "torchvision>=0.23.0",
+    "typer>=0.17.4",
 ]
 
 [project.scripts]
