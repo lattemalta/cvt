@@ -1,9 +1,10 @@
+from pathlib import Path
+
 import lightning as L
-import torch
-from transformers import RTDetrForObjectDetection, RTDetrImageProcessor
-from pycocotools.coco import COCO
 import matplotlib.pyplot as plt
-import numpy as np
+import torch
+from pycocotools.coco import COCO
+from transformers import RTDetrForObjectDetection, RTDetrImageProcessor
 
 
 class LitObjectDetector(L.LightningModule):
@@ -12,15 +13,15 @@ class LitObjectDetector(L.LightningModule):
         self.model = RTDetrForObjectDetection.from_pretrained("PekingU/rtdetr_r50vd")
         self.processor = RTDetrImageProcessor.from_pretrained("PekingU/rtdetr_r50vd")
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.model(x)
 
-    def validation_step(self, batch, batch_idx):
-        images, targets = batch
-        outputs = self(images)
+    def validation_step(self, batch: tuple[torch.Tensor, torch.Tensor], _batch_idx: int) -> dict[str, torch.Tensor]:
+        images, _ = batch
+        _ = self(images)
         return {"val_loss": torch.tensor(0.0)}
 
-    def visualize_image(self, image_id, coco, root_dir, confidence_threshold=0.5):
+    def visualize_image(self, image_id: int, coco: COCO, root_dir: Path, confidence_threshold: float = 0.5) -> None:
         """Visualize RT-DETR predictions on original image."""
         self.model.eval()
 
@@ -51,7 +52,7 @@ class LitObjectDetector(L.LightningModule):
         # Draw prediction bounding boxes
         import matplotlib.patches as patches
 
-        for score, label, box in zip(results["scores"], results["labels"], results["boxes"]):
+        for score, label, box in zip(results["scores"], results["labels"], results["boxes"], strict=True):
             x1, y1, x2, y2 = box.tolist()
             width, height = x2 - x1, y2 - y1
 
@@ -65,12 +66,12 @@ class LitObjectDetector(L.LightningModule):
                 x1,
                 y1 - 10,
                 f"{label_name}: {score:.2f}",
-                bbox=dict(boxstyle="round,pad=0.3", facecolor="yellow", alpha=0.7),
+                bbox={"boxstyle": "round,pad=0.3", "facecolor": "yellow", "alpha": 0.7},
             )
 
         plt.title(f"RT-DETR Predictions (Image ID: {image_id})")
         plt.axis("off")
         plt.show()
 
-    def configure_optimizers(self):
+    def configure_optimizers(self) -> torch.optim.Optimizer:
         return torch.optim.Adam(self.parameters(), lr=1e-4)

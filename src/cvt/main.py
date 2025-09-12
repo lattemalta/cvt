@@ -1,7 +1,6 @@
 from logging import getLogger
 from pathlib import Path
 
-import lightning as L
 from typer import Typer
 
 from cvt.data_modules.coco import LitCOCO2017

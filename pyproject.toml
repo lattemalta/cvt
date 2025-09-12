@@ -66,5 +66,8 @@ lint.select = [
     "FURB",
     "RUF",
     "UP",
-    "TRY",
+]
+lint.ignore = [
+    "N812", # lowercase-imported-as-non-lowercase
+    "RET504", # unnecessary-assign
 ]

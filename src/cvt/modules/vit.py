@@ -49,5 +49,4 @@ class LitVisionTransformer(L.LightningModule):
         self.log("val_acc", (preds.argmax(dim=-1) == y).float().mean())
 
     def configure_optimizers(self) -> torch.optim.Optimizer:
-        optimizer = torch.optim.SGD(self.parameters(), lr=self.lr)
-        return optimizer
+        return torch.optim.SGD(self.parameters(), lr=self.lr)
