@@ -159,7 +159,7 @@ class PretrainedObjectDetector(L.LightningModule):
         image_np = image.permute(1, 2, 0).cpu().numpy()
 
         # Create figure
-        fig, ax = plt.subplots(1, 1, figsize=(12, 8))
+        _, ax = plt.subplots(1, 1, figsize=(12, 8))
         ax.imshow(image_np)
 
         # Draw predictions

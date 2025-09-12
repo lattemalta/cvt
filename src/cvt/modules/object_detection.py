@@ -61,7 +61,7 @@ class LitObjectDetector(L.LightningModule):
             plt.gca().add_patch(rect)
 
             # Add label
-            label_name = self.model.config.id2label[label.item()]
+            label_name = self.model.config.id2label[label.item()]  # type: ignore
             plt.text(
                 x1,
                 y1 - 10,

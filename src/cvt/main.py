@@ -19,7 +19,7 @@ app = Typer()
 
 @app.command(no_args_is_help=True)
 def main(*, verbose: bool = False) -> None:
-    setup_logger(verbose)
+    setup_logger(verbose=verbose)
 
     coco_dm = LitCOCO2017(root_dir=ROOT / "data" / "coco2017", batch_size=4)
     coco_dm.setup("validate")
