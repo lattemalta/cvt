@@ -7,6 +7,7 @@ requires-python = ">=3.12"
 dependencies = [
     "lightning>=2.5.4",
     "matplotlib>=3.10.5",
+    "mypy>=1.18.1",
     "opencv-python>=4.8.0",
     "pillow>=10.0.0",
     "pycocotools>=2.0.10",
@@ -32,4 +33,38 @@ dev = ["pytest>=8.4.1", "ruff>=0.12.10"]
 [tool.ruff]
 line-length = 119
 target-version = "py311"
-lint.select = ["E", "F", "I", "UP"]
+lint.select = [
+    "E",
+    "F",
+    "I",
+    "ANN",
+    "FBT",
+    "B",
+    "A",
+    "C4",
+    "FA",
+    "ICN",
+    "LOG",
+    "INP",
+    "PIE",
+    "T20",
+    "PYI",
+    "Q",
+    "RET",
+    "SLF",
+    "SIM",
+    "SLOT",
+    "TID",
+    "TC",
+    "ARG",
+    "PTH",
+    "C90",
+    "NPY",
+    "N",
+    "PERF",
+    # "PL",
+    "FURB",
+    "RUF",
+    "UP",
+    "TRY",
+]
