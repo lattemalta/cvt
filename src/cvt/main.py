@@ -1,9 +1,11 @@
 from logging import getLogger
 from pathlib import Path
 
+import lightning as L
 from typer import Typer
 
 from cvt.data_modules.coco import LitCOCO2017
+from cvt.modules.object_detection import LitObjectDetector
 
 from .logger import setup_logger
 
@@ -20,13 +22,16 @@ app = Typer()
 def main(verbose: bool = False) -> None:
     setup_logger(verbose)
 
-    coco_dm = LitCOCO2017(
-        root_dir=ROOT / "data" / "coco2017",
-    )
-
+    coco_dm = LitCOCO2017(root_dir=ROOT / "data" / "coco2017", batch_size=4)
     coco_dm.setup("validate")
 
-    val_dataloader = coco_dm.val_dataloader()
+    model = LitObjectDetector()
 
+    # Get first batch and visualize
+    val_dataloader = coco_dm.val_dataloader()
     batch = next(iter(val_dataloader))
-    logger.debug(batch)
+    _, targets = batch
+
+    # Visualize RT-DETR predictions
+    image_id = targets[2]["image_id"].item()
+    model.visualize_image(image_id, coco_dm.val_dataset.coco, coco_dm.root_dir)

@@ -86,7 +86,7 @@ class COCODataset(Dataset):
         return self.cat_names
 
 
-def collate_fn(batch: list[tuple[torch.Tensor, dict[str, Any]]]) -> tuple[list[torch.Tensor], list[dict[str, Any]]]:
+def collate_fn(batch: list[tuple[torch.Tensor, dict[str, Any]]]) -> tuple[torch.Tensor, list[dict[str, Any]]]:
     """Custom collate function for object detection."""
     images = []
     targets = []
@@ -95,7 +95,7 @@ def collate_fn(batch: list[tuple[torch.Tensor, dict[str, Any]]]) -> tuple[list[t
         images.append(image)
         targets.append(target)
 
-    return images, targets
+    return torch.stack(images), targets
 
 
 class LitCOCO2017(L.LightningDataModule):
@@ -104,7 +104,7 @@ class LitCOCO2017(L.LightningDataModule):
         root_dir: Path | str,
         batch_size: int = 4,
         num_workers: int = 4,
-        image_size: int = 512,
+        image_size: int = 640,
     ) -> None:
         super().__init__()
         self.root_dir = Path(root_dir)
