@@ -1,3 +1,4 @@
+from logging import getLogger
 from typing import Any
 
 import lightning as L
@@ -7,6 +8,8 @@ import torch
 import torch.nn as nn
 import torchvision.models.detection as detection_models
 from torch.optim import Optimizer
+
+logger = getLogger(__name__)
 
 
 class PretrainedObjectDetector(L.LightningModule):
@@ -54,7 +57,7 @@ class PretrainedObjectDetector(L.LightningModule):
         """Forward pass for inference."""
         return self.model(images)
 
-    def predict_step(self, batch: Any, batch_idx: int) -> dict[str, Any]:
+    def predict_step(self, batch: tuple[torch.Tensor, torch.Tensor], _batch_idx: int) -> dict[str, Any]:
         """Prediction step for inference."""
         images, targets = batch
 
@@ -76,7 +79,7 @@ class PretrainedObjectDetector(L.LightningModule):
 
         return {"predictions": processed_predictions, "targets": targets, "images": images}
 
-    def validation_step(self, batch: Any, batch_idx: int) -> dict[str, Any]:
+    def validation_step(self, batch: tuple[torch.Tensor, list[dict[str, Any]]], _batch_idx: int) -> dict[str, Any]:
         """Validation step for metric computation."""
         images, targets = batch
 
@@ -87,7 +90,7 @@ class PretrainedObjectDetector(L.LightningModule):
             predictions = self.model(images)
 
         # Store predictions and targets for COCO evaluation
-        for pred, target in zip(predictions, targets):
+        for pred, target in zip(predictions, targets, strict=True):
             # Convert predictions to COCO format
             image_id = target["image_id"].item()
 
@@ -104,7 +107,7 @@ class PretrainedObjectDetector(L.LightningModule):
                 coco_boxes.append([x_min, y_min, x_max - x_min, y_max - y_min])
 
             # Store predictions
-            for box, score, label in zip(coco_boxes, scores, labels):
+            for box, score, label in zip(coco_boxes, scores, labels, strict=True):
                 self.val_predictions.append(
                     {
                         "image_id": image_id,
@@ -164,7 +167,7 @@ class PretrainedObjectDetector(L.LightningModule):
         scores = predictions["scores"][:max_detections]
         labels = predictions["labels"][:max_detections]
 
-        for box, score, label in zip(boxes, scores, labels):
+        for box, score, label in zip(boxes, scores, labels, strict=True):
             x_min, y_min, x_max, y_max = box.cpu().numpy()
             width = x_max - x_min
             height = y_max - y_min
@@ -175,10 +178,7 @@ class PretrainedObjectDetector(L.LightningModule):
 
             # Add label
             label_idx = label.item()
-            if label_idx < len(category_names):
-                category_name = category_names[label_idx]
-            else:
-                category_name = f"Class {label_idx}"
+            category_name = category_names[label_idx] if label_idx < len(category_names) else f"Class {label_idx}"
 
             ax.text(
                 x_min,
@@ -186,7 +186,7 @@ class PretrainedObjectDetector(L.LightningModule):
                 f"{category_name}: {score:.2f}",
                 color="red",
                 fontsize=10,
-                bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.7),
+                bbox={"boxstyle": "round,pad=0.3", "facecolor": "white", "alpha": 0.7},
             )
 
         ax.axis("off")
@@ -194,7 +194,7 @@ class PretrainedObjectDetector(L.LightningModule):
 
         if save_path:
             plt.savefig(save_path, bbox_inches="tight", dpi=150)
-            print(f"Visualization saved to {save_path}")
+            logger.info(f"Visualization saved to {save_path}")
         else:
             plt.show()
 

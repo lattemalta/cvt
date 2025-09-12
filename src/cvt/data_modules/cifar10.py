@@ -1,11 +1,18 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import lightning as L
 import torchvision
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 
+if TYPE_CHECKING:
+    from pathlib import Path
+
 
 class LitCIFAR10(L.LightningDataModule):
-    def __init__(self, root_dir="data", batch_size=32, num_workers=4):
+    def __init__(self, root_dir: str | Path = "data", batch_size: int = 32, num_workers: int = 4) -> None:
         super().__init__()
         self.batch_size = batch_size
         self.num_workers = num_workers
@@ -18,7 +25,7 @@ class LitCIFAR10(L.LightningDataModule):
     def prepare_data(self) -> None:
         torchvision.datasets.CIFAR10(self.root_dir, download=True)
 
-    def setup(self, stage):
+    def setup(self, _stage: str) -> None:
         self.train_dataset = torchvision.datasets.CIFAR10(self.root_dir, train=True, transform=self.transform)
         self.valid_dataset = torchvision.datasets.CIFAR10(self.root_dir, train=False, transform=self.transform)
 

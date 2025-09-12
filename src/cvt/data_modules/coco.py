@@ -79,7 +79,7 @@ class COCODataset(Dataset):
         if self.transform is not None:
             image = self.transform(image)
 
-        return cast(torch.Tensor, image), target
+        return cast("torch.Tensor", image), target
 
     def get_category_names(self) -> list[str]:
         """Get list of category names."""
@@ -123,10 +123,6 @@ class LitCOCO2017(L.LightningDataModule):
 
         self.save_hyperparameters()
 
-    def prepare_data(self) -> None:
-        """Download data if needed (already downloaded in our case)."""
-        pass
-
     def setup(self, stage: str | None = None) -> None:
         """Setup datasets for training and validation."""
         if stage == "fit" or stage is None:
@@ -150,7 +146,7 @@ class LitCOCO2017(L.LightningDataModule):
             shuffle=True,
             num_workers=self.num_workers,
             collate_fn=collate_fn,
-            persistent_workers=True if self.num_workers > 0 else False,
+            persistent_workers=self.num_workers > 0,
         )
 
     def val_dataloader(self) -> DataLoader:
@@ -160,5 +156,5 @@ class LitCOCO2017(L.LightningDataModule):
             shuffle=False,
             num_workers=self.num_workers,
             collate_fn=collate_fn,
-            persistent_workers=True if self.num_workers > 0 else False,
+            persistent_workers=self.num_workers > 0,
         )
