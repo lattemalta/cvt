@@ -6,7 +6,7 @@ import torchmetrics
 from cvt.models.resnet import Resnet18
 
 
-class LitFashionMNIST(L.LightningModule):
+class FashionMNISTModule(L.LightningModule):
     def __init__(
         self,
     ) -> None:

@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 
 class ConvNormLayer(nn.Module):
@@ -19,12 +20,11 @@ class ConvNormLayer(nn.Module):
             padding=(kernel_size - 1) // 2,
         )
         self.norm = nn.BatchNorm2d(ch_out)
-        self.act = nn.ReLU()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.conv(x)
         x = self.norm(x)
-        x = self.act(x)
+        x = F.relu(x)
         return x
 
 
@@ -50,13 +50,12 @@ class BasicBlock(nn.Module):
             kernel_size=1,
             stride=stride,
         )
-        self.act = nn.ReLU()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         out = self.cn1(x)
         out = self.cn2(out)
-        out += self.short(x)
-        out = self.act(out)
+        out = out + self.short(x)
+        out = F.relu(out)
         return out
 
 

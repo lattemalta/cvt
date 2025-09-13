@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader
 from torchvision import datasets
 
 
-class LitFashionMNIST(L.LightningDataModule):
+class FashionMNISTDataModule(L.LightningDataModule):
     def __init__(
         self,
         root_dir: Path,
