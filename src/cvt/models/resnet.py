@@ -61,10 +61,10 @@ class BasicBlock(nn.Module):
 
 
 class Resnet18(nn.Module):
-    def __init__(self, num_classes: int = 1000) -> None:
+    def __init__(self, ch_in: int = 3, num_classes: int = 1000) -> None:
         super().__init__()
         self.layer1 = nn.Sequential(
-            ConvNormLayer(ch_in=3, ch_out=64, kernel_size=7, stride=2),
+            ConvNormLayer(ch_in=ch_in, ch_out=64, kernel_size=7, stride=2),
             nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
         )
         self.layer2 = self._make_layer(64, 64, 2, stride=1)
