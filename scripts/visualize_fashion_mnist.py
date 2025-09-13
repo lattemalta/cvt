@@ -1,6 +1,7 @@
 import logging
 from logging import getLogger
 from pathlib import Path
+
 import matplotlib.pyplot as plt
 from rich.logging import RichHandler
 

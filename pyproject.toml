@@ -14,6 +14,7 @@ dependencies = [
     "rich>=14.1.0",
     "scipy>=1.12.0",
     "torch>=2.8.0",
+    "torchmetrics>=1.8.1",
     "torchsummary>=1.5.1",
     "torchvision>=0.23.0",
     "transformers>=4.46.0",
