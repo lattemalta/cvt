@@ -22,3 +22,6 @@ jobs:
 
       - name: Ruff
         run: uv run ruff check src
+
+      - name: pytest
+        run: uv run pytest -v tests
