@@ -58,3 +58,35 @@ class BasicBlock(nn.Module):
         out += self.short(x)
         out = self.act(out)
         return out
+
+
+class Resnet18(nn.Module):
+    def __init__(self, num_classes: int = 1000) -> None:
+        super().__init__()
+        self.layer1 = nn.Sequential(
+            ConvNormLayer(ch_in=3, ch_out=64, kernel_size=7, stride=2),
+            nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
+        )
+        self.layer2 = self._make_layer(64, 64, 2, stride=1)
+        self.layer3 = self._make_layer(64, 128, 2, stride=2)
+        self.layer4 = self._make_layer(128, 256, 2, stride=2)
+        self.layer5 = self._make_layer(256, 512, 2, stride=2)
+        self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
+        self.fc = nn.Linear(512, num_classes)
+
+    def _make_layer(self, ch_in: int, ch_out: int, n_blocks: int, stride: int) -> nn.Sequential:
+        layers: list[nn.Module] = []
+        layers.append(BasicBlock(ch_in=ch_in, ch_out=ch_out, stride=stride))
+        layers.extend(BasicBlock(ch_in=ch_out, ch_out=ch_out, stride=1) for _ in range(1, n_blocks))
+        return nn.Sequential(*layers)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = self.layer1(x)
+        x = self.layer2(x)
+        x = self.layer3(x)
+        x = self.layer4(x)
+        x = self.layer5(x)
+        x = self.avgpool(x)
+        x = torch.flatten(x, 1)
+        x = self.fc(x)
+        return x

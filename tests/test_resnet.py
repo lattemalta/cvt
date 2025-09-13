@@ -1,6 +1,6 @@
 import torch
 
-from cvt.models.resnet import BasicBlock, ConvNormLayer
+from cvt.models.resnet import BasicBlock, ConvNormLayer, Resnet18
 
 
 def test_conv_norm_layer() -> None:
@@ -15,3 +15,10 @@ def test_basic_block() -> None:
     x = torch.randn(1, 16, 32, 32)
     y = block(x)
     assert y.shape == (1, 32, 16, 16)
+
+
+def test_resnet18() -> None:
+    model = Resnet18(num_classes=10)
+    x = torch.randn(1, 3, 224, 224)
+    y = model(x)
+    assert y.shape == (1, 10)
