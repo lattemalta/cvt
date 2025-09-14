@@ -13,6 +13,7 @@ dependencies = [
     "pycocotools>=2.0.10",
     "rich>=14.1.0",
     "scipy>=1.12.0",
+    "tensorboard>=2.20.0",
     "torch>=2.8.0",
     "torchmetrics>=1.8.1",
     "torchsummary>=1.5.1",

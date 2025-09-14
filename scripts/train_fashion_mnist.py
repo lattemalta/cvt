@@ -3,6 +3,7 @@ from logging import getLogger
 from pathlib import Path
 
 import lightning as L
+from lightning.pytorch.loggers import TensorBoardLogger
 from rich.logging import RichHandler
 
 from cvt.data_modules.fashion_mnist import FashionMNISTDataModule
@@ -22,8 +23,14 @@ def main() -> None:
     )
     fashion_mnist_module = FashionMNISTModule()
 
+    tb_logger = TensorBoardLogger(
+        save_dir=root_dir / "lightning_logs s",
+        name="fashion_mnist",
+    )
+
     trainer = L.Trainer(
-        max_epochs=2,
+        max_epochs=12,
+        logger=tb_logger,
     )
 
     trainer.fit(
